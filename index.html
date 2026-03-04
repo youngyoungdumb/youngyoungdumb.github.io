@@ -1,108 +1,602 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>资源集成平台</title>
-    <!-- 引入 Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
     <style>
-        body {
-            background-color: #f8f9fa;
-            padding-top: 20px;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Inter", "Segoe UI", "Helvetica Neue", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #e6f7ff 0%, #dbeafe 100%);
+        color: #333;
+        line-height: 1.6;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .header {
+        background: linear-gradient(90deg, #4cc9f0 0%, #78d3f0 100%);
+        color: #1a3a5f;
+        text-align: center;
+        padding: 3rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .header::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="0.5" d="M0,0 L100,100 M100,0 L0,100"/></svg>');
+        opacity: 0.5;
+      }
+
+      .header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        position: relative;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        letter-spacing: 0.5px;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto;
+        position: relative;
+      }
+
+      .mobile-menu-btn {
+        display: none;
+        position: absolute;
+        top: 1.5rem;
+        left: 1.5rem;
+        background: rgba(255, 255, 255, 0.8);
+        border: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        color: #1a3a5f;
+        font-size: 1.3rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        z-index: 10;
+      }
+
+      .mobile-menu-btn:hover {
+        background: rgba(255, 255, 255, 0.95);
+        transform: scale(1.05);
+      }
+
+      .navbar {
+        background: rgba(255, 255, 255, 0.95);
+        display: flex;
+        justify-content: center;
+        padding: 1.2rem 1.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid #e0e6ef;
+      }
+
+      .navbar a {
+        color: #1a3a5f;
+        text-decoration: none;
+        margin: 0 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s;
+        position: relative;
+        font-size: 1.05rem;
+        padding: 0.3rem 0;
+        letter-spacing: 0.3px;
+      }
+
+      .navbar a:hover {
+        color: #4cc9f0;
+        transform: translateY(-2px);
+      }
+
+      .navbar a::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #4cc9f0;
+        transition: width 0.3s;
+      }
+
+      .navbar a:hover::after {
+        width: 100%;
+      }
+
+      .categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 2rem;
+        padding: 2.5rem 1.5rem;
+      }
+
+      .category-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid #e0e6ef;
+        position: relative;
+        height: 100%;
+      }
+
+      .category-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+      }
+
+      .category-icon {
+        background: linear-gradient(135deg, #4cc9f0 0%, #78d3f0 100%);
+        color: #1a3a5f;
+        font-size: 2.4rem;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      .category-icon::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(90deg, #ff6b6b, #ff9e6d, #ffd566, #a4e86e, #63e6be);
+      }
+
+      .category-content {
+        padding: 2rem;
+        position: relative;
+        z-index: 2;
+      }
+
+      .category-content h3 {
+        margin-bottom: 1.2rem;
+        color: #1a3a5f;
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+      }
+
+      .category-content h3::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 24px;
+        background: #4cc9f0;
+        border-radius: 3px;
+        margin-right: 10px;
+      }
+
+      .category-content ul {
+        list-style: none;
+      }
+
+      .category-content li {
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        transition: all 0.2s;
+        font-size: 1.05rem;
+      }
+
+      .category-content li:hover {
+        color: #4cc9f0;
+      }
+
+      .category-content li::before {
+        content: "✓";
+        display: inline-block;
+        width: 28px;
+        height: 28px;
+        background: #e6f7ff;
+        color: #4cc9f0;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 28px;
+        margin-right: 12px;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .tools {
+        background: white;
+        border-radius: 24px;
+        padding: 2.5rem 2rem;
+        margin: 2.5rem 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tools h2 {
+        text-align: center;
+        margin-bottom: 2.2rem;
+        color: #1a3a5f;
+        font-size: 1.8rem;
+        position: relative;
+      }
+
+      .tools h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, #4cc9f0, #78d3f0);
+        border-radius: 2px;
+      }
+
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .tool-btn {
+        background: linear-gradient(135deg, #4cc9f0 0%, #78d3f0 100%);
+        color: white;
+        border: none;
+        padding: 1.1rem;
+        border-radius: 16px;
+        cursor: pointer;
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-weight: 600;
+        font-size: 1.05rem;
+        box-shadow: 0 4px 15px rgba(76, 201, 240, 0.3);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .tool-btn:hover {
+        transform: translateY(-4px) scale(1.03);
+        box-shadow: 0 8px 25px rgba(76, 201, 240, 0.4);
+      }
+
+      .tool-btn::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transform: rotate(30deg);
+        transition: all 0.6s;
+      }
+
+      .tool-btn:hover::after {
+        transform: rotate(30deg) translate(20%, 20%);
+      }
+
+      .footer {
+        background: #f0f7ff;
+        color: #1a3a5f;
+        text-align: center;
+        padding: 2.5rem 1.5rem;
+        margin-top: 2rem;
+        border-top: 1px solid #e0e6ef;
+      }
+
+      .footer p {
+        font-size: 0.95rem;
+        opacity: 0.8;
+      }
+
+      .footer a {
+        color: #4cc9f0;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+
+      .footer a:hover {
+        color: #1a3a5f;
+      }
+
+      @media (max-width: 768px) {
+        .mobile-menu-btn {
+          display: block;
         }
-        .header {
-            background-color: #007bff;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+        .navbar {
+          display: none;
+          flex-direction: column;
+          position: fixed;
+          top: 0;
+          left: 0;
+          height: 100vh;
+          width: 280px;
+          background: rgba(255, 255, 255, 0.98);
+          padding: 2.5rem 1.5rem 1.5rem;
+          z-index: 1000;
+          box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+          overflow-y: auto;
+          transition: transform 0.3s ease;
         }
-        .category-title {
-            color: #007bff;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-            margin-top: 30px;
+
+        .navbar.active {
+          display: flex;
+          transform: translateX(0);
         }
-        .resource-card {
-            border: 1px solid #e9ecef;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
+
+        .navbar.active {
+          transform: translateX(0);
         }
-        .resource-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+
+        .navbar a {
+          display: block;
+          margin: 1.2rem 0;
+          font-size: 1.1rem;
         }
-        .badge-category {
-            font-size: 0.9em;
-            margin-right: 5px;
+
+        .categories {
+          grid-template-columns: 1fr;
+          padding: 1.5rem;
         }
+
+        .category-card {
+          max-width: 100%;
+          margin: 0 auto 1.8rem;
+        }
+
+        .tools {
+          margin: 2rem 1rem;
+          padding: 2rem 1.5rem;
+        }
+
+        .tools-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header h1 {
+          font-size: 2.2rem;
+        }
+
+        .header p {
+          font-size: 1.05rem;
+        }
+
+        .category-icon {
+          font-size: 2.1rem;
+          padding: 1.8rem;
+        }
+
+        .category-content {
+          padding: 1.8rem;
+        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
+    <div class="header">
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1>资源集成平台</h1>
+      <p>一站式获取多领域资源与实用工具，让工作更高效、生活更精彩</p>
+    </div>
 
-    <div class="container">
+    <nav class="navbar" id="navbar">
+      <a href="#dev-tools">开发工具</a>
+      <a href="#design">设计资源</a>
+      <a href="#ai">AI工具</a>
+      <a href="#office">办公效率</a>
+      <a href="#learning">学习资源</a>
+      <a href="#health">健康与生活</a>
+      <a href="#finance">金融与投资</a>
+      <a href="#entertainment">娱乐与媒体</a>
+    </nav>
 
-        <!-- 顶部标题：资源集成平台 -->
-        <div class="header">
-            <h1 class="display-4">资源集成平台</h1>
-            <p class="lead">一站式获取各类精选资源与实用工具</p>
+    <div class="categories">
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-code"></i>
         </div>
+        <div class="category-content">
+          <h3>开发工具</h3>
+          <ul>
+            <li>Git版本控制</li>
+            <li>Docker容器化</li>
+            <li>VS Code插件库</li>
+            <li>Postman API测试</li>
+            <li>GitHub Actions</li>
+          </ul>
+        </div>
+      </div>
 
-        <div class="row">
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-palette"></i>
+        </div>
+        <div class="category-content">
+          <h3>设计资源</h3>
+          <ul>
+            <li>Figma组件库</li>
+            <li>Sketch模板</li>
+            <li>Adobe资源包</li>
+            <li>UI/UX设计规范</li>
+            <li>3D模型资源</li>
+          </ul>
+        </div>
+      </div>
 
-            <!-- 网站集成 (左侧) -->
-            <div class="col-lg-6">
-                <h2 class="category-title">🌐 网站集成</h2>
-                <p class="text-muted">按类型分类的精选网站导航</p>
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="category-content">
+          <h3>AI工具</h3>
+          <ul>
+            <li>通义千问</li>
+            <li>Midjourney</li>
+            <li>Stable Diffusion</li>
+            <li>AI代码助手</li>
+            <li>语音合成工具</li>
+          </ul>
+        </div>
+      </div>
 
-                <!-- 示例：设计类 -->
-                <div class="resource-card">
-                    <h5><span class="badge bg-primary badge-category">设计资源</span></h5>
-                    <ul class="list-unstyled mt-3">
-                        <li><a href="#!" class="text-decoration-none">Dribbble - 设计师社区</a></li>
-                        <li><a href="#!" class="text-decoration-none">Behance - 作品集展示</a></li>
-                        <li><a href="#!" class="text-decoration-none">Unsplash - 免版权图片</a></li>
-                    </ul>
-                </div>
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-briefcase"></i>
+        </div>
+        <div class="category-content">
+          <h3>办公效率</h3>
+          <ul>
+            <li>Notion工作区</li>
+            <li>Trello项目管理</li>
+            <li>Google Workspace</li>
+            <li>Microsoft 365</li>
+            <li>Zoom会议</li>
+          </ul>
+        </div>
+      </div>
 
-                <!-- 示例：开发类 -->
-                <div class="resource-card">
-                    <h5><span class="badge bg-success badge-category">开发文档</span></h5>
-                    <ul class="list-unstyled mt-3">
-                        <li><a href="#!" class="text-decoration-none">MDN Web Docs</a></li>
-                        <li><a href="#!" class="text-decoration-none">GitHub</a></li>
-                        <li><a href="#!" class="text-decoration-none">Stack Overflow</a></li>
-                    </ul>
-                </div>
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-graduation-cap"></i>
+        </div>
+        <div class="category-content">
+          <h3>学习资源</h3>
+          <ul>
+            <li>Coursera课程</li>
+            <li>edX专业认证</li>
+            <li>Khan Academy</li>
+            <li>Udemy技能学习</li>
+            <li>学术论文库</li>
+          </ul>
+        </div>
+      </div>
 
-                <!-- 示例：学习类 -->
-                <div class="resource-card">
-                    <h5><span class="badge bg-info text-dark badge-category">在线学习</span></h5>
-                    <ul class="list-unstyled mt-3">
-                        <li><a href="https://www.bohrium.com/courses" class="text-decoration-none">Coursera</a></li>
-                        <li><a href="https://zh.khanacademy.org/" class="text-decoration-none">Khan Academy</a></li>
-                        <li><a href="https://www.bilibili.com/" class="text-decoration-none">B站学习区</a></li>
-                    </ul>
-                </div>
-            </div>
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-heartbeat"></i>
+        </div>
+        <div class="category-content">
+          <h3>健康与生活</h3>
+          <ul>
+            <li>健身计划</li>
+            <li>饮食营养</li>
+            <li>心理健康</li>
+            <li>睡眠优化</li>
+            <li>冥想指导</li>
+          </ul>
+        </div>
+      </div>
 
-            <!-- 小工具集成 (右侧) -->
-            <div class="col-lg-6">
-                <h2 class="category-title">🛠️ 小工具集成</h2>
-                <p class="text-muted">实用的在线小工具，提升工作效率</p>
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <div class="category-content">
+          <h3>金融与投资</h3>
+          <ul>
+            <li>股票分析</li>
+            <li>基金筛选</li>
+            <li>加密货币</li>
+            <li>财务规划</li>
+            <li>税务计算</li>
+          </ul>
+        </div>
+      </div>
 
-                <!-- 示例：格式转换 -->
-                <div class="resource-card">
-                    <h5><span class="badge bg-warning text-dark badge-category">格式转换</span></h5>
-                    <ul class="list-unstyled mt-3">
-                        <li><a href="#!" class="text-decoration-none">图片格式转换 (JPG/PNG/WebP)</a></li>
-                        <li><a href="#!" clas
+      <div class="category-card">
+        <div class="category-icon">
+          <i class="fas fa-film"></i>
+        </div>
+        <div class="category-content">
+          <h3>娱乐与媒体</h3>
+          <ul>
+            <li>视频资源</li>
+            <li>音乐平台</li>
+            <li>播客精选</li>
+            <li>游戏社区</li>
+            <li>电子书库</li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
+    <div class="tools">
+      <h2>实用小工具</h2>
+      <div class="tools-grid">
+        <button class="tool-btn"><i class="fas fa-ruler"></i> 单位转换</button>
+        <button class="tool-btn"><i class="fas fa-palette"></i> 颜色选择器</button>
+        <button class="tool-btn"><i class="fas fa-code"></i> JSON格式化</button>
+        <button class="tool-btn"><i class="fas fa-key"></i> 密码生成器</button>
+        <button class="tool-btn"><i class="fas fa-qrcode"></i> 二维码生成</button>
+        <button class="tool-btn"><i class="fas fa-file-alt"></i> 文本比较</button>
+        <button class="tool-btn"><i class="fas fa-coins"></i> 汇率计算</button>
+        <button class="tool-btn"><i class="fas fa-clock"></i> 时间转换</button>
+      </div>
+    </div>
 
+    <div class="footer">
+      <p>© 2026 资源集成平台 | 一站式资源与工具中心 · 让数字生活更简单</p>
+      <p>
+        设计灵感来自：<a href="https://www.figma.com" target="_blank">Figma</a> ·
+        <a href="https://www.google.com/design" target="_blank">Google Material Design</a>
+      </p>
+    </div>
+
+    <script>
+      // 移动端菜单切换
+      const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+      const navbar = document.getElementById("navbar");
+
+      mobileMenuBtn.addEventListener("click", () => {
+        navbar.classList.toggle("active");
+      });
+
+      // 滚动时隐藏导航栏
+      let lastScrollTop = 0;
+      window.addEventListener("scroll", () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        if (scrollTop > lastScrollTop && scrollTop > 100) {
+          navbar.style.top = "-100px";
+        } else {
+          navbar.style.top = "0";
+        }
+        lastScrollTop = scrollTop;
+      });
+    </script>
+  </body>
+</html>
